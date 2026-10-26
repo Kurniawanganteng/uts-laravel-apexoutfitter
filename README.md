@@ -1,4 +1,4 @@
-# Apex Outfitter — Outdoor Gear & Expedition Management System
+# Apex Outfitter — Outdoor Gear POS & Expedition Management System
 
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
@@ -6,27 +6,83 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 
 > **Proyek Ujian Tengah Semester (UTS) Individu — Pemrograman Web Terintegrasi**  
-> Sistem Informasi Inventaris Gudang, Kasir Point of Sale (POS) Toko Fisik, dan E-Commerce Peralatan Outdoor dengan Simulasi Payment Gateway Digital (QRIS & Virtual Account) serta Kontrol Transaksi Berbasis Peran.
+> Sistem Manajemen Inventaris Gudang, Kasir Point of Sale (POS) Toko Fisik, dan E-Commerce Perlengkapan Outdoor dengan Simulasi Payment Gateway Digital (QRIS Nasional Standar GPN & Virtual Account Bank) serta Kontrol Transaksi Berbasis Peran.
+
+---
+
+## ⚡ PANDUAN CEPAT: MENJALANKAN APLIKASI DARI README
+
+Anda dapat langsung menjalankan web ini di komputer Anda dengan salah satu dari dua cara berikut:
+
+### Opsi 1: Cara Paling Cepat (1-Klik di Windows)
+1. Buka aplikasi **XAMPP Control Panel**, pastikan modul **MySQL** dan **Apache** dalam status **Running (Aktif)**.
+2. Di dalam folder utama proyek, **klik 2x (double-click)** pada file:
+   ```text
+   JALANKAN_APLIKASI.bat
+   ```
+3. Web server lokal akan otomatis menyala di port 8000.
+4. Buka peramban (browser) Anda dan akses alamat:
+   👉 **`http://127.0.0.1:8000`**
+
+---
+
+### Opsi 2: Instalasi Standar dari Repositori Baru (Fresh Clone)
+Jalankan urutan perintah berikut di terminal (Command Prompt / PowerShell / Git Bash):
+
+```bash
+# 1. Masuk ke folder proyek
+cd apexoutfitter
+
+# 2. Unduh seluruh dependensi framework Laravel
+composer install
+
+# 3. Buat berkas environment (.env) dari contoh
+copy .env.example .env    # Windows Command Prompt / PowerShell
+# cp .env.example .env    # Linux / macOS / Git Bash
+
+# 4. Generate Application Encryption Key unik
+php artisan key:generate
+
+# 5. Buat database baru bernama 'inventory_uts' di phpMyAdmin (http://localhost/phpmyadmin),
+#    lalu jalankan migrasi tabel dan seeding data dummy otomatis:
+php artisan migrate:fresh --seed
+
+# 6. Jalankan development server lokal
+php artisan serve --host=127.0.0.1 --port=8000
+```
+Buka browser dan buka: 👉 **`http://127.0.0.1:8000`**
+
+---
+
+## 🔑 KREDENSIAL AKUN PENGUJIAN (DEMO ACCOUNTS)
+
+Sistem telah diisi data awal (*seeder*) otomatis sehingga siap diuji di hadapan penguji/dosen tanpa perlu input data manual dari awal:
+
+| Peran (Role) | Nama Pengguna | Alamat Email | Kata Sandi | Halaman Utama (Redirect) | Hak Akses Utama |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **👑 Owner / Administrator** | Apex Owner & Admin | `admin@mail.com` | `password123` | `/dashboard` | **Akses Penuh:** Dashboard eksekutif, live chart laba kotor & omset, kelola master data (produk, kategori, supplier, pengguna), cetak laporan laba rugi, dan **satu-satunya yang berhak membatalkan transaksi POS maupun online**. |
+| **💼 Staff Kasir & Gudang** | Staff Kasir Lapangan | `staff@mail.com` | `password123` | `/sales/create` | **Operasional Toko:** Melayani kasir POS toko fisik, input pasokan stok gudang dari supplier, cek ketersediaan barang, dan proses packing/kirim pesanan online. *Dilarang membatalkan transaksi.* |
+| **🎒 Customer / Pelanggan** | Jack Kurniawan | `customer@mail.com` | `password123` | `/shop` | **Belanja Online:** Jelajah katalog outdoor, keranjang belanja (cart), checkout alamat, simulasi bayar QRIS & Virtual Account, faktur struk belanja, dan rekapitulasi pengeluaran pribadi. *Akses backoffice diblokir otomatis.* |
+
+> **Registrasi Publik:** Pengunjung umum dapat mendaftar mandiri kapan saja melalui tombol **"Daftar Pelanggan Baru"** di halaman login (`/register`). Akun baru secara otomatis terdaftar sebagai `customer`.
 
 ---
 
 ## 1. Project Overview (Ringkasan Proyek)
 
-**Apex Outfitter** adalah sistem aplikasi web berbasis Laravel 12 yang dirancang khusus untuk operasional bisnis retail perlengkapan petualangan alam, pendakian gunung, dan camping (seperti tenda dome, carrier/ransel gunung, sepatu trekking, jaket hardshell waterproof, sleeping bag, kompor portable, hingga peralatan survival).
+**Apex Outfitter** adalah sistem aplikasi web berbasis Laravel 12 yang dirancang khusus untuk operasional retail perlengkapan ekspedisi alam terbuka, pendakian gunung, dan camping (seperti tenda dome, carrier gunung, sepatu trekking, jaket hardshell waterproof, sleeping bag, kompor portable, hingga peralatan survival).
 
-Sistem ini mengintegrasikan dua portal utama dalam satu ekosistem terpadu:
-1. **Portal Publik & E-Commerce Pelanggan (Customer Experience):**
-   - Pengunjung umum dapat langsung menjelajahi katalog perlengkapan outdoor, melakukan pencarian, memfilter kategori, melihat detail spesifikasi alat, dan menambahkan barang ke keranjang belanja (*Shopping Cart*) tanpa harus login di awal.
-   - Saat checkout, pelanggan dapat memasukkan data ekspedisi dan memilih metode pembayaran digital melalui **ApexPay Gateway** (QRIS resmi standar GPN dan Virtual Account Bank).
-   - Pelanggan terdaftar memiliki akses ke riwayat pesanan, faktur digital (invoice cetak), serta laporan analisis pengeluaran belanja pribadi.
+Sistem ini menggabungkan dua lingkungan operasional dalam satu platform terpadu:
+1. **Portal Publik & Toko Online Pelanggan (Customer Experience):**
+   - Pengunjung umum dapat langsung menjelajahi katalog perlengkapan outdoor, melakukan pencarian cerdas, memfilter kategori, melihat detail spesifikasi alat, dan menambahkan barang ke keranjang belanja (*Shopping Cart*) tanpa harus login di awal.
+   - Saat checkout, pelanggan memasukkan data ekspedisi dan memilih metode pembayaran digital melalui **ApexPay Gateway** (QRIS resmi standar GPN dan Virtual Account Bank).
+   - Pelanggan terdaftar memiliki akses ke riwayat pesanan, faktur digital (invoice cetak ramah printer), serta laporan analisis pengeluaran belanja pribadi.
 
 2. **Portal Backoffice & Kasir POS (Owner & Staff):**
-   - Terminal kasir **Point of Sale (POS)** untuk melayani pembelian langsung di toko fisik secara cepat dengan pemotongan stok otomatis dan cetak struk nota.
+   - Terminal kasir **Point of Sale (POS)** untuk transaksi cepat di kasir toko fisik dengan pemotongan stok atomik dan cetak nota kasir.
    - Manajemen pasokan stok masuk (*Stock-In*) dari supplier resmi untuk menambah persediaan gudang.
-   - Dashboard eksekutif dengan **grafik visual dinamis Chart.js** yang otomatis menghitung omset live, margin laba kotor, dan peringatan stok kritis.
+   - Dashboard eksekutif dengan **grafik visual dinamis Chart.js** yang otomatis menghitung omset live, perbandingan penjualan POS vs Online, dan peringatan stok kritis.
    - Pusat laporan bisnis komprehensif yang siap dicetak ke format PDF.
-
-Sistem menerapkan prinsip **Data Integrity** (keamanan transaksi atomik via database transactions dan penguncian stok) serta **Access Control** ketat berbasis 3 peran pengguna (**Owner**, **Staff**, dan **Customer**).
 
 ---
 
@@ -35,7 +91,7 @@ Sistem menerapkan prinsip **Data Integrity** (keamanan transaksi atomik via data
 Sebelum menjalankan aplikasi, pastikan komputer/server Anda memenuhi spesifikasi berikut:
 
 * **PHP:** Versi `>= 8.2`
-  * Ekstensi PHP yang wajib aktif: `pdo`, `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `curl`.
+  * Ekstensi PHP wajib aktif: `pdo`, `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `curl`.
 * **Database Server:** MySQL `>= 5.7` atau MariaDB `>= 10.4` (disediakan oleh **XAMPP**, WampServer, atau instalasi native).
 * **Package Manager:** [Composer](https://getcomposer.org/) versi `>= 2.2`
 * **Web Browser:** Google Chrome, Mozilla Firefox, Microsoft Edge, atau Safari modern.
@@ -43,163 +99,310 @@ Sebelum menjalankan aplikasi, pastikan komputer/server Anda memenuhi spesifikasi
 
 ---
 
-## 3. Installation (Panduan Instalasi dari Repository Baru)
+## 3. Environment Setup (Pengaturan Berkas `.env`)
 
-Ikuti langkah-langkah terstruktur berikut untuk memasang proyek dari repositori baru (*fresh clone*):
+Berkas `.env` mengatur konfigurasi koneksi database dan parameter sistem:
 
-### Langkah 1: Clone Repositori
-Buka terminal (Git Bash, Command Prompt, atau PowerShell), lalu clone repositori ke komputer Anda:
-```bash
-git clone https://github.com/USERNAME/REPOSITORY_NAME.git apexoutfitter
-cd apexoutfitter
-```
+```env
+APP_NAME="Apex Outfitter"
+APP_ENV=local
+APP_KEY=base64:... (dihasilkan oleh php artisan key:generate)
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 
-### Langkah 2: Install Dependensi PHP
-Jalankan Composer untuk mengunduh seluruh dependensi framework Laravel:
-```bash
-composer install
-```
-
-### Langkah 3: Konfigurasi File Environment (`.env`)
-Salin file konfigurasi contoh `.env.example` menjadi `.env`:
-* **Di Windows (Command Prompt / PowerShell):**
-  ```cmd
-  copy .env.example .env
-  ```
-* **Di Linux / macOS / Git Bash:**
-  ```bash
-  cp .env.example .env
-  ```
-
-### Langkah 4: Generate Application Key
-Buat kunci enkripsi unik aplikasi Laravel:
-```bash
-php artisan key:generate
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=inventory_uts
+DB_USERNAME=root
+DB_PASSWORD=
 ```
 
 ---
 
-## 4. Environment Setup (Pengaturan Database & Server)
+## 4. Migration & Seeding (Struktur Data Dummy Otomatis)
 
-1. Buka aplikasi **XAMPP Control Panel** dan klik **Start** pada modul **Apache** dan **MySQL**.
-2. Buka browser dan akses **phpMyAdmin** di alamat `http://localhost/phpmyadmin`.
-3. Buat database baru bernama **`inventory_uts`** (Collation: `utf8mb4_unicode_ci`).
-4. Buka file `.env` di teks editor Anda, lalu pastikan parameter koneksi database sudah sesuai:
-   ```env
-   APP_NAME="Apex Outfitter"
-   APP_ENV=local
-   APP_KEY=base64:... (sudah terisi otomatis dari Langkah 4)
-   APP_DEBUG=true
-   APP_URL=http://localhost:8000
-
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=inventory_uts
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
-   *(Catatan: Jika MySQL Anda menggunakan password, sesuaikan pada variabel `DB_PASSWORD`)*.
+Perintah `php artisan migrate:fresh --seed` membangun **11 tabel database relasional** beserta seluruh data awal:
+* **7 Kategori Produk Outdoor:** Tenda Gunung, Ransel & Carrier, Sepatu & Sandal, Pakaian & Jaket Gunung, Perlengkapan Tidur (Sleeping Bag & Matras), Alat Masak Outdoor, dan Aksesoris Ekspedisi.
+* **5 Supplier Resmi:** PT Eigerindo Multi Produk, Consina The Outdoor Lifestyle, Arei Outdoor Gear Indonesia, Deuter Indonesia Supply, dan The North Face Official Distr.
+* **16 Produk Master Peralatan Outdoor:** Dilengkapi foto resolusi tinggi yang akurat (tas carrier gunung, tenda dome, hiking boots kulit asli, kompor camping, dll.), harga beli modal, harga jual, dan stok awal.
+* **Data Transaksi Riil:** Riwayat transaksi penjualan POS kasir, pasokan stok supplier, pesanan online pelanggan, dan pembayaran digital otomatis terisi untuk menghasilkan grafik analitik Chart.js seketika.
 
 ---
 
-## 5. Migration & Seeding (Migrasi & Data Dummy Otomatis)
+## 5. Visual Tampilan Antarmuka Web (Dashboard & Transaksi)
 
-Jalankan perintah berikut di terminal untuk membangun seluruh 11 tabel database relasional beserta seluruh data awal (*seed data*):
+Berikut gambaran struktur dan tata letak antarmuka halaman-halaman utama dalam sistem:
 
-```bash
-php artisan migrate:fresh --seed
-```
-
-### Apa Saja yang Dibuat Otomatis oleh Seeder?
-1. **5 Akun Pengguna:** 1 akun Owner/Admin, 1 akun Staff Kasir, dan 3 akun Customer (termasuk **Jack Kurniawan**).
-2. **7 Kategori Produk Outdoor:** Tenda Gunung, Ransel & Carrier, Sepatu & Sandal, Pakaian & Jaket Gunung, Perlengkapan Tidur (Sleeping Bag & Matras), Alat Masak Outdoor, dan Aksesoris Ekspedisi.
-3. **5 Supplier Resmi:** PT Eigerindo Multi Produk, Consina The Outdoor Lifestyle, Arei Outdoor Gear Indonesia, Deuter Indonesia Supply, dan The North Face Official Distr.
-4. **16 Produk Master Peralatan Outdoor:** Dilengkapi foto resolusi tinggi yang akurat (tas carrier gunung, tenda dome, hiking boots kulit asli, kompor camping, dll.), harga beli modal, harga jual, dan stok awal.
-5. **Data Transaksi Riil:** Riwayat transaksi penjualan POS kasir, pasokan stok supplier, pesanan online pelanggan, dan pembayaran digital otomatis terisi untuk menghasilkan grafik analitik Chart.js seketika.
-
----
-
-## 6. Menjalankan Aplikasi Web
-
-Anda dapat menjalankan server lokal dengan salah satu cara berikut:
-
-### Opsi A: Melalui Script Otomatis (Windows)
-Cukup **klik 2x (double click)** pada file:
+### A. Katalog & Toko Online Pelanggan (`/shop`)
 ```text
-JALANKAN_APLIKASI.bat
++--------------------------------------------------------------------------------------------------+
+|  [LOGO] APEX OUTFITTER    Katalog Alat   Riwayat Pesanan   Laporan Belanja    [Keranjang: 2] [Jack]  |
++--------------------------------------------------------------------------------------------------+
+|  [ HERO BANNER: PERLENGKAPAN GUNUNG, CAMPING & PETUALANGAN ALAM ]                                |
+|  Menyediakan peralatan standar ekspedisi teruji dari supplier resmi. [Lihat Seluruh Katalog]     |
++--------------------------------------------------------------------------------------------------+
+|  [Cari Nama / SKU: "Tenda"]   [Filter Kategori: Semua Outdoor V]   [Urutkan Harga V]             |
++--------------------------------------------------------------------------------------------------+
+|  +--------------------+  +--------------------+  +--------------------+  +--------------------+  |
+|  | [FOTO TENDA DOME]  |  | [FOTO CARRIER 65L] |  | [FOTO HIKING BOOT] |  | [FOTO SLEEPING BAG]|  |
+|  | Tenda Dome Apex 4P |  | Carrier Highland   |  | Sepatu Alpine Mid  |  | Sleeping Bag Down  |  |
+|  | Stok: 16 Unit      |  | Stok: 12 Unit      |  | Stok: 14 Unit      |  | Stok: 2 Unit (Low) |  |
+|  | Rp 1.250.000       |  | Rp 980.000         |  | Rp 890.000         |  | Rp 790.000         |  |
+|  | [+ Keranjang]      |  | [+ Keranjang]      |  | [+ Keranjang]      |  | [+ Keranjang]      |  |
+|  +--------------------+  +--------------------+  +--------------------+  +--------------------+  |
++--------------------------------------------------------------------------------------------------+
 ```
-Script ini akan langsung menyalakan server lokal Laravel di port 8000.
 
-### Opsi B: Melalui Terminal / CLI
-Jalankan perintah artisan standar:
-```bash
-php artisan serve --host=127.0.0.1 --port=8000
+### B. Simulasi Payment Gateway Digital ApexPay (`/payment/{order}`)
+```text
++-----------------------------------------------------------------------------------+
+|                            APEXPAY GATEWAY SIMULATOR                              |
+|                       Portal Pembayaran Digital Terverifikasi                     |
++-----------------------------------------------------------------------------------+
+|  [KIRI: METODE PEMBAYARAN]                  |  [KANAN: RINCIAN TAGIHAN PESANAN]   |
+|                                             |                                     |
+|  +---------------------------------------+  |  No. Pesanan: ORD-20261026-901     |
+|  |  QRIS (STANDAR NASIONAL GPN)          |  |  Pelanggan  : Jack Kurniawan        |
+|  |  NMID: ID1020268891024                |  |  Waktu Order: 26 Okt 2026, 18:30    |
+|  |                                       |  |  Status     : MENUNGGU PEMBAYARAN   |
+|  |      [  QR CODE MATRIX RESMI  ]       |  |                                     |
+|  |      [     SCAN TO PAY        ]       |  |  Rincian Item:                      |
+|  |                                       |  |  1. Tenda Apex Summit 4P (1x)       |
+|  |  Sisa Waktu Bayar: [ 14:48 Menit ]    |  |  2. Kompor Gas FireStorm (1x)       |
+|  |  Dukung: GoPay, OVO, DANA, BCA, BRI   |  |-------------------------------------|
+|  +---------------------------------------+  |  Total Bayar: Rp 1.410.000          |
+|                                             |                                     |
+|  [✓ SIMULASIKAN PEMBAYARAN BERHASIL]        |  *Catatan: Pembatalan hanya berhak  |
+|  (Mengunci stok & mengubah status PAID)     |   dilakukan oleh Owner toko.        |
++-----------------------------------------------------------------------------------+
 ```
 
-Buka peramban (browser) Anda dan akses alamat:
-👉 **`http://127.0.0.1:8000`**
+### C. Struk Faktur Digital Pelanggan (`/customer/orders/{id}`)
+```text
++-----------------------------------------------------------------------------------+
+|                                  APEX OUTFITTER                                   |
+|             Expedition Gear & Outdoor Lifestyle - Bukti Transaksi Resmi           |
+|-----------------------------------------------------------------------------------|
+| No. Invoice : ORD-20261026-901                    Tanggal  : 26 Oktober 2026      |
+| Pembeli     : Jack Kurniawan (08123456789)        Metode   : ApexPay QRIS (GPN)   |
+| Alamat      : Jl. Rinjani No. 12, Bandung         Status   : SUDAH LUNAS (PAID)   |
+|-----------------------------------------------------------------------------------|
+| No | Nama Perlengkapan Outdoor           | Qty | Harga Satuan  | Subtotal         |
+|----+------------------------------------+-----+---------------+------------------|
+| 1  | Tenda Dome Apex Summit 4P           | 1   | Rp 1.250.000  | Rp 1.250.000     |
+| 2  | Kompor Camping FireStorm Windproof  | 1   | Rp   160.000  | Rp   160.000     |
+|-----------------------------------------------------------------------------------|
+|                                                    TOTAL AKHIR: Rp 1.410.000      |
+|-----------------------------------------------------------------------------------|
+| [🖨 CETAK FAKTUR BELANJA]                                      [← KEMBALI BELANJA] |
++-----------------------------------------------------------------------------------+
+```
+
+### D. Executive Dashboard Backoffice (`/dashboard`)
+```text
++--------------------------------------------------------------------------------------------------+
+|  [LOGO] APEX OUTFITTER   Dashboard   Katalog Alat   Kasir POS   Pasokan Stok   Pesanan   Laporan     |
+|  Status: [OWNER / ADMINISTRATOR]                                              [admin@mail.com]   |
++--------------------------------------------------------------------------------------------------+
+|  [ WELCOME OWNER: KONTROL PENUH & ANALITIK FINANSIAL ]  [+ Buka Kasir POS]  [+ Pasokan Masuk]    |
++--------------------------------------------------------------------------------------------------+
+|  [ OMSET BULAN INI ]      [ ESTIMASI LABA KOTOR ]   [ TOTAL TRANSAKSI ]    [ STOK PERLU RESTOCK ] |
+|  Rp 42.850.000            Rp 15.340.000             48 Transaksi           2 Produk Kritis        |
++--------------------------------------------------------------------------------------------------+
+|  [ LIVE CHART.JS DONUT: DISTRIBUSI PENDAPATAN ]     | [ PERINGATAN STOK MENIPIS (CRITICAL) ]      |
+|                                                     |                                             |
+|        #### Kasir POS (68%)                         | 1. Sleeping Bag Goose Down : Sisa 2 (Min 3) |
+|        #### Toko Online (32%)                       | 2. Ransel Daypack Boulder  : Sisa 3 (Min 5) |
+|                                                     |                                             |
+|  *Otomatis update live dari transaksi database!     | Tindakan: Segera input pasokan supplier!    |
++--------------------------------------------------------------------------------------------------+
+```
+
+### E. Terminal Kasir Point of Sale (`/sales/create`)
+```text
++-----------------------------------------------------------------------------------+
+|                        TERMINAL KASIR PENJUALAN LANGSUNG (POS)                    |
+|                        Petugas: Staff Kasir Lapangan (staff@mail.com)             |
++-----------------------------------------------------------------------------------+
+|  Daftar Item Belanja Kasir:                                                       |
+|  [1] [Pilih Produk: Carrier Apex Highland 65L (Stok: 12) V]  [Qty: 1]  [Hapus]    |
+|  [2] [Pilih Produk: Sandal Gunung TrailGrip (Stok: 28)    V]  [Qty: 2]  [Hapus]    |
+|                                                                                   |
+|  [+ Tambah Baris Produk]                                                          |
+|-----------------------------------------------------------------------------------|
+|  Subtotal Kasir: Rp 1.310.000                     [PROSES TRANSAKSI & CETAK STRUK]|
++-----------------------------------------------------------------------------------+
+```
 
 ---
 
-## 7. Demo Accounts & Hak Akses (Role Permissions)
+## 6. Entity-Relationship Diagram (ERD Lengkap Database)
 
-Sistem telah dilengkapi 3 peran pengguna dengan kredensial pengujian yang siap didemonstrasikan di hadapan dosen/penguji:
+Aplikasi **Apex Outfitter** menggunakan database relasional MariaDB/MySQL dengan **11 tabel utama** yang saling terhubung secara terstruktur (*3rd Normal Form / 3NF*):
 
-| Peran (Role) | Nama Pengguna | Alamat Email | Kata Sandi | Halaman Utama (Redirect) | Hak Akses Utama |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Owner / Administrator** | Apex Owner & Admin | `admin@mail.com` | `password123` | `/dashboard` | **Kontrol Penuh:** Dashboard eksekutif, live chart laba/omset, kelola master data (produk, kategori, supplier, pengguna), cetak laporan laba rugi, dan **satu-satunya yang berhak membatalkan transaksi POS maupun online**. |
-| **Staff Kasir & Gudang** | Staff Kasir Lapangan | `staff@mail.com` | `password123` | `/sales/create` | **Operasional Toko:** Melayani transaksi kasir POS toko fisik, input pasokan barang masuk gudang dari supplier, cek stok barang, dan proses packing/kirim pesanan online. *Tidak memiliki izin membatalkan transaksi dan tidak bisa mengelola pengguna.* |
-| **Customer / Pelanggan** | Jack Kurniawan | `customer@mail.com` | `password123` | `/shop` | **Belanja Online:** Jelajah katalog outdoor, keranjang belanja (cart), checkout pengiriman, simulasi bayar QRIS & Virtual Account, riwayat pesanan, dan rekapitulasi pengeluaran pribadi. *Akses backoffice diblokir otomatis.* |
+### Visual Diagram ERD (Mermaid)
+```mermaid
+erDiagram
+    USERS ||--o{ PURCHASES : "mencatat"
+    USERS ||--o{ SALES : "melayani"
+    USERS ||--o{ ORDERS : "membuat"
+    CATEGORIES ||--o{ PRODUCTS : "mengelompokkan"
+    SUPPLIERS ||--o{ PURCHASES : "memasok"
+    PURCHASES ||--|{ PURCHASE_ITEMS : "memiliki"
+    PRODUCTS ||--o{ PURCHASE_ITEMS : "termuat"
+    SALES ||--|{ SALE_ITEMS : "memiliki"
+    PRODUCTS ||--o{ SALE_ITEMS : "termuat"
+    ORDERS ||--|{ ORDER_ITEMS : "memiliki"
+    PRODUCTS ||--o{ ORDER_ITEMS : "termuat"
+    ORDERS ||--o| PAYMENTS : "diberi"
 
-> **Registrasi Publik:** Pengunjung umum dapat mendaftar mandiri kapan saja melalui tombol **"Daftar Pelanggan Baru"** di halaman login (`/register`). Akun baru secara otomatis terdaftar sebagai `customer`.
+    USERS {
+        bigint id PK
+        string name
+        string email UK
+        string password
+        enum role "admin, staff, customer"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CATEGORIES {
+        bigint id PK
+        string name UK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SUPPLIERS {
+        bigint id PK
+        string name
+        string phone
+        string email
+        text address
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PRODUCTS {
+        bigint id PK
+        bigint category_id FK
+        string sku UK
+        string name
+        text description
+        string image
+        decimal purchase_price
+        decimal selling_price
+        int stock
+        int minimum_stock
+        timestamp deleted_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PURCHASES {
+        bigint id PK
+        bigint supplier_id FK
+        bigint user_id FK
+        string purchase_number UK
+        decimal total
+        enum status "completed, pending, cancelled"
+        timestamp purchased_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PURCHASE_ITEMS {
+        bigint id PK
+        bigint purchase_id FK
+        bigint product_id FK
+        int quantity
+        decimal unit_cost
+        decimal subtotal
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SALES {
+        bigint id PK
+        bigint user_id FK
+        string sale_number UK
+        decimal total
+        enum status "completed, cancelled"
+        timestamp sold_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SALE_ITEMS {
+        bigint id PK
+        bigint sale_id FK
+        bigint product_id FK
+        int quantity
+        decimal unit_price
+        decimal subtotal
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ORDERS {
+        bigint id PK
+        bigint user_id FK
+        string order_number UK
+        string customer_name
+        string customer_phone
+        text shipping_address
+        text notes
+        decimal total_amount
+        enum status "pending_payment, paid, processing, completed, cancelled"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ORDER_ITEMS {
+        bigint id PK
+        bigint order_id FK
+        bigint product_id FK
+        int quantity
+        decimal unit_price
+        decimal subtotal
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PAYMENTS {
+        bigint id PK
+        bigint order_id FK
+        enum payment_method "qris, bank_transfer, ewallet"
+        string payment_channel
+        string transaction_code UK
+        decimal amount
+        string va_number
+        enum status "pending, success, failed, expired"
+        timestamp paid_at
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+```
+
+### Kamus Data Relasi Foreign Key:
+1. `products.category_id` &rarr; `categories.id` *(Kategori produk outdoor)*
+2. `purchases.supplier_id` &rarr; `suppliers.id` *(Pemasok resmi barang masuk)*
+3. `purchases.user_id` &rarr; `users.id` *(Petugas pencatat pasokan gudang)*
+4. `purchase_items.purchase_id` &rarr; `purchases.id` *(Cascade delete)*
+5. `purchase_items.product_id` &rarr; `products.id` *(Item barang masuk)*
+6. `sales.user_id` &rarr; `users.id` *(Petugas kasir POS toko)*
+7. `sale_items.sale_id` &rarr; `sales.id` *(Cascade delete)*
+8. `sale_items.product_id` &rarr; `products.id` *(Item belanja kasir)*
+9. `orders.user_id` &rarr; `users.id` *(Pelanggan pembuat pesanan online)*
+10. `order_items.order_id` &rarr; `orders.id` *(Cascade delete)*
+11. `order_items.product_id` &rarr; `products.id` *(Item pesanan toko)*
+12. `payments.order_id` &rarr; `orders.id` *(Cascade delete, relasi 1-to-1)*
 
 ---
 
-## 8. Fitur-Fitur Utama Aplikasi (Features Breakdown)
-
-### A. E-Commerce & Pengalaman Belanja Pelanggan
-* **Katalog Alat Outdoor Dinamis:** Filter kategori instan, pencarian nama dan SKU, visualisasi ketersediaan stok, dan foto barang outdoor yang presisi.
-* **Keranjang Belanja Realtime (Cart):** Multi-item shopping cart berbasis Session dengan validasi kuantitas stok otomatis.
-* **Checkout Terstruktur:** Formulir alamat pengiriman, kontak penerima, catatan ekspedisi, dan pemilihan metode pembayaran digital.
-* **Faktur & Struk Digital:** Tampilan invoice resmi ramah cetak (*print-friendly*) lengkap dengan nomor pesanan, rincian barang, dan status lunas.
-* **Laporan Belanja Pelanggan:** Rekapitulasi total belanja customer, akumulasi unit barang, dan filter periode tanggal.
-
-### B. Payment Gateway Simulator (ApexPay Gateway)
-* **Keamanan Perhitungan Harga (Server-Side Calculation):** Harga produk diambil **100% dari database server** (`products.selling_price`), bukan dari browser/client, guna mencegah eksploitasi manipulasi harga (*Price Tampering*).
-* **QRIS Standar Nasional (GPN):** Tampilan QR Code matrix dengan banner merah GPN, NMID resmi `ID1020268891024`, nama merchant **APEX OUTFITTER INDONESIA**, dan countdown timer hitung mundur 15 menit.
-* **Virtual Account Bank (VA):** Generator kode pembayaran unik berbasis bank tujuan (BCA `8801...`, Mandiri `8902...`, BNI `8803...`, BRI `8804...`) dengan tombol salin nomor VA dan panduan m-Banking.
-* **E-Wallet:** Dukungan pembayaran digital GoPay, OVO, dan DANA.
-* **Simulasi Verifikasi Instan:** Tombol simulasi bayar yang memicu verifikasi lunas, mengunci stok dengan `Product::lockForUpdate()`, dan memotong stok gudang secara atomik.
-
-### C. Alur Pembatalan Transaksi Eksklusif Owner
-* Pembatalan transaksi penjualan kasir (POS) maupun pesanan online pelanggan **secara ketat hanya dapat dieksekusi oleh akun Owner / Administrator**.
-* Staff kasir maupun customer tidak memiliki tombol pembatalan di tampilan mereka. Jika dilakukan bypass URL, server akan menolak dengan kode keamanan dan pesan: *"Akses ditolak: Pembatalan transaksi hanya dapat dilakukan oleh Owner / Administrator."*
-* Saat transaksi dibatalkan oleh Owner, sistem secara otomatis mengembalikan stok barang ke gudang (`Product::increment('stock', $qty)`) dan memperbarui status pembayaran menjadi gagal melalui `DB::transaction()`.
-
-### D. Kasir Point of Sale (POS) Toko Fisik
-* Antarmuka kasir cepat untuk input transaksi langsung di toko outdoor.
-* Fitur multi-item dinamis (tambah baris barang tanpa reload).
-* Validasi ketersediaan stok seketika dan pencetakan bukti struk kasir toko.
-
-### E. Pasokan Stok Masuk Gudang (Stock-In Purchases)
-* Pencatatan barang masuk dari supplier resmi (Eiger, Consina, Arei, Deuter, TNF).
-* Input kuantitas dan harga modal beli satuan (*unit cost*).
-* Otomatis menambah jumlah stok inventaris produk terkait di database.
-
-### F. Dashboard Eksekutif & Visualisasi Grafik (Chart.js)
-* **Statistik Finansial:** Grand total omset gabungan (POS + Web), omset bulanan, dan estimasi laba kotor (*gross profit*).
-* **Live Chart Donut:** Diagram visual interaktif yang membandingkan kontribusi pendapatan Kasir POS vs Toko Online secara otomatis dari database.
-* **Peringatan Stok Kritis:** Tabel pemantauan produk dengan sisa stok &le; batas minimum stok untuk segera dipasok ulang.
-
-### G. Pusat Laporan Bisnis Terpadu
-* Filter rentang tanggal fleksibel (*date range*).
-* Rekapitulasi Penjualan POS Kasir, Pesanan Toko Online, dan Pembelian Barang dari Supplier.
-* Mode **Cetak Laporan Resmi / Simpan ke PDF** dengan tata letak kop surat standar perusahaan.
-
----
-
-## 9. Data Integrity & Error Handling Architecture
+## 7. Data Integrity & Error Handling Architecture
 
 Aplikasi dibangun dengan memperhatikan keandalan data (*Data Integrity*) dan penanganan galat (*Error Handling*) standar industri:
 
@@ -215,37 +418,15 @@ Aplikasi dibangun dengan memperhatikan keandalan data (*Data Integrity*) dan pen
 
 ---
 
-## 10. Entity-Relationship Diagram (ERD)
+## 8. Known Limitations (Batasan Sistem)
 
-Database `inventory_uts` terdiri atas **11 tabel relasional** yang saling berhubungan:
-
-```mermaid
-erDiagram
-    USERS ||--o{ PURCHASES : "mencatat"
-    USERS ||--o{ SALES : "melayani"
-    USERS ||--o{ ORDERS : "membuat"
-    CATEGORIES ||--o{ PRODUCTS : "mengelompokkan"
-    SUPPLIERS ||--o{ PURCHASES : "memasok"
-    PURCHASES ||--|{ PURCHASE_ITEMS : "memiliki"
-    PRODUCTS ||--o{ PURCHASE_ITEMS : "termuat"
-    SALES ||--|{ SALE_ITEMS : "memiliki"
-    PRODUCTS ||--o{ SALE_ITEMS : "termuat"
-    ORDERS ||--|{ ORDER_ITEMS : "memiliki"
-    PRODUCTS ||--o{ ORDER_ITEMS : "termuat"
-    ORDERS ||--o| PAYMENTS : "diberi"
-```
-
----
-
-## 11. Known Limitations (Batasan Sistem)
-
-* **Koneksi Gambar Produk:** Gambar katalog peralatan outdoor menggunakan CDN Unsplash resmi beresolusi tinggi. Diperlukan koneksi internet agar browser dapat merender gambar asli perlengkapan tersebut secara sempurna. Jika offline, browser akan menampilkan teks alt dan layout tetap rapi.
+* **Koneksi Gambar Produk:** Gambar katalog peralatan outdoor menggunakan CDN Unsplash resmi beresolusi tinggi. Diperlukan koneksi internet agar browser dapat merender foto asli perlengkapan tersebut secara sempurna. Jika offline, browser akan menampilkan teks alt dan tata letak halaman tetap rapi.
 * **Simulasi Payment Gateway:** Modul ApexPay Gateway adalah simulator pembayaran digital untuk keperluan demonstrasi akademik (UTS), sehingga tidak melakukan pemotongan saldo rekening bank riil.
 * **Hak Akses Pembatalan:** Kebijakan pembatalan transaksi sengaja dikunci secara mutlak hanya untuk Owner/Administrator demi memenuhi integritas audit stok inventaris toko.
 
 ---
 
-## 12. Lisensi & Hak Cipta
+## 9. Lisensi & Hak Cipta
 
 Proyek ini dikembangkan secara independen sebagai tugas akhir **Ujian Tengah Semester (UTS) Mata Kuliah Pemrograman Web Terintegrasi**.  
 Hak Cipta &copy; 2026 **Apex Outfitter Management System**. Seluruh hak dilindungi undang-undang.
