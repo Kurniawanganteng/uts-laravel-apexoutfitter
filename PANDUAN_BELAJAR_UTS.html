@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Belajar & Demo UTS — Apex Outfitter</title>
+    <style>
+        :root {
+            --primary: #047857;
+            --primary-dark: #064e3b;
+            --secondary: #d97706;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #b91c1c;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f1f5f9;
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 16px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #047857 100%);
+            color: white;
+            padding: 32px 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(6, 78, 59, 0.3);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #d1fae5;
+            font-size: 14px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .card h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+        .card h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 16px 0 8px 0;
+        }
+        .step-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 14px 16px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 12px;
+        }
+        .step-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-main);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        tr:hover {
+            background: #f8fafc;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .tag-admin { background: #fee2e2; color: #991b1b; }
+        .tag-staff { background: #fef3c7; color: #92400e; }
+        .tag-customer { background: #d1fae5; color: #065f46; }
+        
+        .code-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .qa-card {
+            background: #fdfefe;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+        .qa-q {
+            font-weight: 700;
+            color: #064e3b;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .qa-a {
+            color: #334155;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .erd-visual {
+            background: #0f172a;
+            color: #a7f3d0;
+            padding: 16px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.4;
+        }
+        .tip {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin: 12px 0;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 32px 0 16px 0;
+        }
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .card { padding: 16px; }
+            .header { padding: 24px 16px; }
+            .header h1 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <span class="badge">UTS PEMROGRAMAN WEB INDIVIDU</span>
+            <h1>Apex Outfitter POS & Outdoor Gear</h1>
+            <p>Buku Saku Panduan Belajar, Skenario Demo Dosen & Jawaban Pengujian Sistem</p>
+        </div>
+
+        <!-- LOKASI APLIKASI & CARA MENJALANKAN -->
+        <div class="card">
+            <h2>1. Lokasi Berkas & Cara Menjalankan untuk Demo Dosen</h2>
+            <p style="font-size: 14px; margin-bottom: 12px;">Seluruh berkas aplikasi Anda berada di direktori laptop berikut:</p>
+            
+            <div class="code-box">C:\Users\USER\Documents\Uts JAKka\</div>
+
+            <div class="step-box">
+                <div class="step-title">Langkah 1: Aktifkan MySQL di XAMPP</div>
+                <div class="step-desc">Buka <strong>XAMPP Control Panel</strong>, lalu klik tombol <strong>Start</strong> pada modul <strong>MySQL</strong> (Port 3306).</div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-title">Langkah 2: Jalankan Launcher Aplikasi</div>
+                <div class="step-desc">Masuk ke folder <code>C:\Users\USER\Documents\Uts JAKka\</code>, lalu <strong>Double-Click file:</strong><br>
+                <code style="font-weight:bold; color:#047857;">JALANKAN_APLIKASI.bat</code> (otomatis membuka server di background).</div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-title">Langkah 3: Buka Browser di Laptop</div>
+                <div class="step-desc">Buka Google Chrome atau Edge, lalu akses:
+                <br>&bull; Toko Perlengkapan Outdoor: <strong>http://127.0.0.1:8000/shop</strong>
+                <br>&bull; Halaman Login: <strong>http://127.0.0.1:8000/login</strong></div>
+            </div>
+
+            <div class="tip">
+                <strong>Cara Membuka di HP:</strong> Kirim file <code>PANDUAN_BELAJAR_UTS.html</code> ini ke akun WhatsApp Anda sendiri lewat WhatsApp Web, lalu buka di HP. Formatnya 100% responsif tanpa perlu instalasi aplikasi tambahan.
+            </div>
+        </div>
+
+        <!-- AKUN LOGIN DEMO -->
+        <div class="card">
+            <h2>2. Kredensial Akun Pengujian Demo</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Peran (Role)</th>
+                        <th>Email Login</th>
+                        <th>Password</th>
+                        <th>Nama Akun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="tag tag-admin">OWNER / ADMIN</span></td>
+                        <td><code>admin@mail.com</code></td>
+                        <td><code>password123</code></td>
+                        <td>Apex Owner & Administrator</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-staff">STAFF KASIR</span></td>
+                        <td><code>staff@mail.com</code></td>
+                        <td><code>password123</code></td>
+                        <td>Staff Kasir Lapangan</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-customer">CUSTOMER</span></td>
+                        <td><code>customer@mail.com</code></td>
+                        <td><code>password123</code></td>
+                        <td><strong>Jack Kurniawan</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SKENARIO DEMO DEPAN DOSEN -->
+        <div class="card">
+            <h2>3. Skenario Demo di Depan Dosen (Step-by-Step)</h2>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">Urutan pengujian terstruktur untuk menunjukkan seluruh logika dan alur sistem:</p>
+
+            <h3>Skenario A: Demo Pelanggan (Jack Kurniawan)</h3>
+            <div class="step-box">
+                <div class="step-title">1. Buka Katalog Perlengkapan Outdoor (/shop)</div>
+                <div class="step-desc">Tunjukkan katalog produk bertema alam bebas (Tenda, Carrier, Sepatu, Jaket Gore-Tex, Sleeping Bag). Tunjukkan fitur pencarian, filter kategori, dan status stok realtime.</div>
+            </div>
+            <div class="step-box">
+                <div class="step-title">2. Keranjang Belanja & Validasi Stok Gudang (/cart)</div>
+                <div class="step-desc">Tambahkan produk ke keranjang belanja. Coba ubah kuantitas melebihi batas stok gudang: sistem akan menolak dan memberikan pesan peringatan error secara otomatis.</div>
+            </div>
+            <div class="step-box">
+                <div class="step-title">3. Checkout & Payment Gateway ApexPay</div>
+                <div class="step-desc">Isi alamat pengiriman dan pilih metode pembayaran:
+                <br>&bull; <strong>QRIS:</strong> Tampilan QR Code standar GPN dengan NMID resmi dan countdown timer.
+                <br>&bull; <strong>Virtual Account:</strong> Nomor VA Bank unik (BCA, Mandiri, BNI, BRI) dengan fitur satu-klik salin.
+                <br>&bull; <strong>E-Wallet:</strong> GoPay, OVO, DANA.</div>
+            </div>
+            <div class="step-box">
+                <div class="step-title">4. Simulasi Pelunasan Webhook</div>
+                <div class="step-desc">Klik tombol <strong>"Konfirmasi Pembayaran Sukses (Simulasi)"</strong>. Jelaskan ke dosen: "Server mengeksekusi <code>lockForUpdate()</code>, memotong stok alat di gudang secara atomik, dan menerbitkan struk lunas."</div>
+            </div>
+            <div class="step-box">
+                <div class="step-title">5. Cetak Faktur / Struk & Laporan Belanja</div>
+                <div class="step-desc">Tunjukkan halaman struk yang siap cetak (Ctrl+P) dan menu <strong>Laporan Belanja Pelanggan</strong> untuk melihat total belanja Jack Kurniawan.</div>
+            </div>
+
+            <h3>Skenario B: Demo Backoffice & Hak Akses Pembatalan Owner</h3>
+            <div class="step-box">
+                <div class="step-title">1. Login sebagai Owner (admin@mail.com)</div>
+                <div class="step-desc">Tunjukkan <strong>Executive Dashboard Chart.js</strong>: diagram donat perbandingan penjualan Kasir POS vs Toko Online, ringkasan omset otomatis, dan peringatan stok menipis (&le; 5 unit).</div>
+            </div>
+            <div class="step-box">
+                <div class="step-title">2. Alur Pembatalan Transaksi Eksklusif Owner</div>
+                <div class="step-desc">Tunjukkan bahwa tombol pembatalan transaksi POS maupun pesanan pelanggan hanya muncul dan dapat dijalankan oleh akun Owner. Ketika dibatalkan, kuantitas stok otomatis dikembalikan ke inventaris.</div>
+            </div>
+            <div class="step-box">
+                <div class="step-title">3. Pusat Laporan Bisnis (/reports)</div>
+                <div class="step-desc">Tunjukkan laporan keuangan komprehensif: Omset POS, Pesanan Online, Pembelian Modal Gudang, dan Estimasi Laba Kotor dengan filter rentang tanggal dan tombol cetak PDF resmi.</div>
+            </div>
+        </div>
+
+        <!-- KUNCI JAWABAN PERTANYAAN DOSEN -->
+        <div class="card">
+            <h2>4. Pertanyaan Ujian Dosen & Kunci Jawabannya</h2>
+
+            <div class="qa-card">
+                <div class="qa-q">Q1: "Harga saat checkout diambil dari mana? Apakah pembeli bisa memodifikasi harga via inspect element?"</div>
+                <div class="qa-a"><strong>Jawaban:</strong> "Tidak bisa dimanipulasi, Pak/Bu. Sistem menerapkan <em>Strict Server-Side Pricing</em> di <code>CheckoutController.php</code>. Input harga dari client diabaikan sepenuhnya; server mengambil harga resmi langsung dari database via <code>Product::findOrFail($id)->selling_price</code> di dalam <code>DB::transaction()</code>."</div>
+            </div>
+
+            <div class="qa-card">
+                <div class="qa-q">Q2: "Bagaimana sistem mencegah race condition saat dua pembeli memesan stok terakhir bersamaan?"</div>
+                <div class="qa-a"><strong>Jawaban:</strong> "Sistem menggunakan row-level lock <code>Product::lockForUpdate()</code> pada database MariaDB. Baris data produk dikunci selama proses pembayaran. Jika pembeli pertama berhasil, pembeli kedua akan menerima pesan bahwa stok tidak mencukupi dan sistem otomatis melakukan rollback."</div>
+            </div>
+
+            <div class="qa-card">
+                <div class="qa-q">Q3: "Bagaimana aturan pembatalan transaksi diimplementasikan?"</div>
+                <div class="qa-a"><strong>Jawaban:</strong> "Sesuai kebijakan keamanan toko, hak pembatalan transaksi eksklusif milik <strong>Owner/Administrator</strong> melalui middleware <code>can:admin-only</code> di <code>routes/web.php</code> dan pengecekan otorisasi di Controller. Staff kasir dan pelanggan tidak memiliki hak membatalkan transaksi tanpa verifikasi Owner."</div>
+            </div>
+
+            <div class="qa-card">
+                <div class="qa-q">Q4: "Mengapa tabel products menggunakan Soft Deletes?"</div>
+                <div class="qa-a"><strong>Jawaban:</strong> "Untuk menjaga integritas referensial data masa lalu (<em>Historical Audit Trail</em>). Jika produk dihapus dari katalog, transaksi kasir lama dan pesanan online yang pernah memuat produk tersebut tidak akan rusak atau error."</div>
+            </div>
+        </div>
+
+        <!-- ERD & STRUKTUR TABEL -->
+        <div class="card">
+            <h2>5. Ringkasan ERD Database (11 Tabel)</h2>
+            <div class="erd-visual">
++------------------+         +-------------------+         +--------------------+
+|    CATEGORIES    | 1 --- N |     PRODUCTS      | 1 --- N |     ORDER_ITEMS    |
++------------------+         +-------------------+         +--------------------+
+| id (PK)          |         | id (PK)           |         | id (PK)            |
+| name             |         | category_id (FK)  |         | order_id (FK)      |
++------------------+         | sku, name, stock  |         | product_id (FK)    |
+                             | purchase_price    |         | quantity, subtotal |
+                             | selling_price     |         +---------+----------+
+                             +---------+---------+                   | N
+                                       |                             |
+                                       | 1                           | 1
++------------------+         +---------+---------+         +---------+----------+
+|    SUPPLIERS     | 1 --- N |    PURCHASE_ITEMS |         |       ORDERS       |
++------------------+         +-------------------+         +--------------------+
+| id (PK)          |         | id (PK)           |         | id (PK)            |
+| name, phone      |         | purchase_id (FK)  |         | user_id (FK)       |
++--------+---------+         | product_id (FK)   |         | order_number       |
+         |                   | quantity, subtotal|         | customer_name      |
+         | 1                 +---------+---------+         | total_amount       |
+         |                             |                     | status             |
+         | N                           | N                   +---------+----------+
++--------+---------+                   |                               | 1
+|    PURCHASES     |                   | 1                             |
++------------------+         +---------+---------+                     | 1
+| id (PK)          |         |     SALE_ITEMS    |         +---------+----------+
+| supplier_id (FK) |         +-------------------+         |      PAYMENTS      |
+| user_id (FK)     |         | id (PK)           |         +--------------------+
+| purchase_number  |         | sale_id (FK)      |         | id (PK)            |
++--------+---------+         | product_id (FK)   |         | order_id (FK)      |
+         |                   | quantity, subtotal|         | payment_method     |
+         | N                 +---------+---------+         | transaction_code   |
+         |                             |                     | amount, status     |
+         | 1                           | N                   +--------------------+
++--------+---------+                   |
+|      USERS       | 1 --------------- + 1 (SALES / Kasir POS)
++------------------+
+| id (PK)          |
+| name, email      |
+| role (enum)      |
++------------------+
+            </div>
+            
+            <h3 style="margin-top:16px;">Kardinalitas Kunci:</h3>
+            <ul style="font-size:13px; margin-left: 18px; line-height: 1.8;">
+                <li><strong>Categories ke Products (1 : N):</strong> 1 kategori outdoor mengelompokkan banyak produk alat.</li>
+                <li><strong>Users ke Orders (1 : N):</strong> 1 akun customer (Jack Kurniawan) dapat memiliki banyak pesanan online.</li>
+                <li><strong>Orders ke Order_Items (1 : N):</strong> 1 pesanan online menampung satu atau banyak item belanjaan.</li>
+                <li><strong>Orders ke Payments (1 : 1):</strong> 1 pesanan online terhubung tepat ke 1 sesi transaksi ApexPay Gateway.</li>
+                <li><strong>Suppliers ke Purchases (1 : N):</strong> 1 supplier memasok banyak transaksi pembelian stok masuk gudang.</li>
+                <li><strong>Sales ke Sale_Items (1 : N):</strong> 1 struk kasir toko fisik mencatat banyak rincian barang.</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p><strong>Apex Outfitter POS & Inventory System</strong> &bull; Proyek Ujian Tengah Semester (UTS) Individu</p>
+            <p>Framework: Laravel 12 &bull; Database: MariaDB (XAMPP) &bull; Styling: Tailwind CSS &bull; Chart: Chart.js</p>
+        </div>
+
+    </div>
+</body>
+</html>
